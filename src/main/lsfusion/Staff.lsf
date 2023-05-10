@@ -1,0 +1,18 @@
+MODULE Staff;
+
+REQUIRE System, Numerator;
+
+CLASS Staff 'Сотрудники';
+    name 'ФИО' = DATA STRING[60] (Staff) NONULL;
+    post 'Должность' = DATA STRING[30] (Staff) NONULL;
+    departament 'Кафедра/отдел'= DATA STRING[30] (Staff);
+    phone 'Телефон' = DATA NUMERIC[11,0] (Staff);
+    email 'Email' = DATA STRING[40] (Staff);
+    office 'Кабинет/рабочее место' = DATA NUMERIC[3,0] (Staff) NONULL;
+
+FORM staff 'Сотрудники'
+    OBJECTS s = Staff // когда просто объект и его название, то создается таблица
+    PROPERTIES(s) name, post, departament, phone, email, office
+    PROPERTIES(s) NEW, EDIT, DELETE
+;
+//сделать нумератор строк

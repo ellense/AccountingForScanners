@@ -1,0 +1,18 @@
+MODULE AcountingForScanners;
+
+REQUIRE Staff, Room;
+
+NAVIGATOR {
+    NEW FOLDER masterData 'Учет сканеров' FIRST WINDOW toolbar IMAGE 'manufacturing.png' {
+        NEW staff;
+        NEW room;
+//        NEW GraphCalc;
+//        NEW Invoices;
+//        NEW Products;
+//        NEW Provider;
+//        NEW Entity;
+//        NEW FOLDER configurationss 'Конфигурации' {
+//            NEW setting;
+//        }
+    }
+}

@@ -1,0 +1,16 @@
+MODULE Room;
+
+REQUIRE System;
+
+CLASS Room 'Помещения';
+number 'Номер' = DATA NUMERIC[3,0] (Room) NONULL;
+desc 'Описание' = DATA STRING[30] (Room);
+location 'Расположение'= DATA STRING[60] (Room);
+container 'Емкость' = DATA NUMERIC[4,0] (Room);
+sumScan 'Кол-во сканеров' = DATA NUMERIC[2,0] (Room) NONULL ;
+
+FORM room 'Помещения'
+    OBJECTS s = Room // когда просто объект и его название, то создается таблица
+    PROPERTIES(s) number, desc, location, container, sumScan
+PROPERTIES(s) NEW, EDIT, DELETE
+;
