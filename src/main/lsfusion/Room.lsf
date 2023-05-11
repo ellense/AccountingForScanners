@@ -3,14 +3,42 @@ MODULE Room;
 REQUIRE System;
 
 CLASS Room 'Помещения';
+//CLASS RoomScanner;
+//
+//room 'Линия документа' = DATA Room (RoomScanner) NONULL DELETE; // строка помещения для сканеров
+//index 'Номер строки' (RoomScanner d) = PARTITION SUM 1 IF d IS RoomScanner ORDER d BY room(d);
+
 number 'Номер' = DATA NUMERIC[3,0] (Room) NONULL;
 desc 'Описание' = DATA STRING[30] (Room);
 location 'Расположение'= DATA STRING[60] (Room);
 container 'Емкость' = DATA NUMERIC[4,0] (Room);
-sumScan 'Кол-во сканеров' = DATA NUMERIC[2,0] (Room) NONULL ;
+sumScan 'Кол-во сканеров' = DATA NUMERIC[2,0] (Room)  ;
 
-FORM room 'Помещения'
+//scan 'накладная' = DATA Scanner (RoomScanner) NONULL DELETE;
+//numberScan 'Номер накладной' (RoomScanner d) = number(scan(d));
+//modelScan 'Сумма по накладной' (RoomScanner d) = model(scan(d));
+
+//FORM room 'Помещение' // форма создания ку
+//    OBJECTS s = Room PANEL // панель означает что элементы будут не в таблице а по отдельности
+//    PROPERTIES(s) number, desc, location, container, sumScan
+//
+////    OBJECTS d = RoomScanner // когда просто объект и его название, то создается таблица
+//////    PROPERTIES(d) index, numberScan, modelScan, NEW , DELETE
+////    FILTERS room(d) = s
+////    EDIT Room OBJECT s
+//
+//;
+//
+//DESIGN room { //дизайн для формы создания ку
+//    caption = (CONCAT ' ', 'Помещение.', '№' + number(s));
+//}
+
+FORM rooms 'Помещения'
     OBJECTS s = Room // когда просто объект и его название, то создается таблица
-    PROPERTIES(s) number, desc, location, container, sumScan
-PROPERTIES(s) NEW, EDIT, DELETE
+    PROPERTIES(s)  number, desc, location, container, sumScan
+    PROPERTIES(s)  NEW, EDIT, DELETE
+
+//    OBJECTS d = RoomScanner
+////    PROPERTIES(d) READONLY index, numberScan, modelScan
+//    FILTERS room(d) = s
 ;

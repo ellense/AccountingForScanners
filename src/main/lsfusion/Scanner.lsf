@@ -1,0 +1,18 @@
+MODULE Scanner;
+
+REQUIRE System, Room;
+
+CLASS Scanner 'Сканеры';
+number 'Номер' = DATA STRING[60] (Scanner) NONULL;
+model 'Модель' = DATA STRING[40] (Scanner) NONULL;
+class 'Аудитория' = DATA Room (Scanner);
+numberRoom 'Аудитория/кабинет' (Scanner a) = number(class(a)) NONULL;
+serviceability 'Исправность' = DATA BOOLEAN (Scanner);
+date1 'Дата последней технической проверки' = DATA DATE (Scanner);
+date2 'Дата следующей технической проверки' = DATA DATE (Scanner) ;
+
+FORM scanner 'Сканеры'
+    OBJECTS s = Scanner // когда просто объект и его название, то создается таблица
+    PROPERTIES(s) number, model, numberRoom, serviceability, date1, date2
+    PROPERTIES(s) NEW, EDIT, DELETE
+;
