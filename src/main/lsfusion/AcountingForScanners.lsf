@@ -6,7 +6,7 @@ NAVIGATOR {
     NEW FOLDER masterData 'Учет сканеров' FIRST WINDOW toolbar IMAGE 'manufacturing.png' {
         NEW rooms;
         NEW staff;
-        NEW scanner;
+        NEW scanners;
 //        
 //        NEW FOLDER configurationss 'Конфигурации' {
 //            NEW setting;

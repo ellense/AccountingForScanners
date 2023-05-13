@@ -1,6 +1,6 @@
 MODULE Staff;
 
-REQUIRE System, Numerator;
+REQUIRE System, Numerator,Room;
 
 CLASS Staff 'Сотрудники';
     name 'ФИО' = DATA STRING[60] (Staff) NONULL;
@@ -8,11 +8,13 @@ CLASS Staff 'Сотрудники';
     departament 'Кафедра/отдел'= DATA STRING[30] (Staff);
     phone 'Телефон' = DATA NUMERIC[11,0] (Staff);
     email 'Email' = DATA STRING[40] (Staff);
-    office 'Кабинет/рабочее место' = DATA NUMERIC[3,0] (Staff) NONULL;
+class 'Аудитория' = DATA Room (Staff);
+numberRoom 'Аудитория/кабинет' (Staff a) = number(class(a)) NONULL;
 
 FORM staff 'Сотрудники'
     OBJECTS s = Staff // когда просто объект и его название, то создается таблица
-    PROPERTIES(s) name, post, departament, phone, email, office
+    PROPERTIES(s) name, post, departament, phone, email, numberRoom
     PROPERTIES(s) NEW, EDIT, DELETE
+    LIST Staff OBJECT s // // для полного вывода таблицы прикрепленной
 ;
 //сделать нумератор строк

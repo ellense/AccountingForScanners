@@ -37,6 +37,7 @@ FORM rooms 'Помещения'
     OBJECTS s = Room // когда просто объект и его название, то создается таблица
     PROPERTIES(s)  number, desc, location, container, sumScan
     PROPERTIES(s)  NEW, EDIT, DELETE
+    LIST Room OBJECT s // для полного вывода таблицы прикрепленной
 
 //    OBJECTS d = RoomScanner
 ////    PROPERTIES(d) READONLY index, numberScan, modelScan

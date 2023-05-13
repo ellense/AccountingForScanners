@@ -1,18 +1,62 @@
 MODULE Scanner;
 
-REQUIRE System, Room;
+REQUIRE  Room, Staff, Meta;
 
 CLASS Scanner 'Сканеры';
-number 'Номер' = DATA STRING[60] (Scanner) NONULL;
+
+@defineDocStatus(Scanner, 'ku');
+
+number 'Инвентарный номер' = DATA STRING[60] (Scanner) NONULL;
 model 'Модель' = DATA STRING[40] (Scanner) NONULL;
+
 class 'Аудитория' = DATA Room (Scanner);
 numberRoom 'Аудитория/кабинет' (Scanner a) = number(class(a)) NONULL;
-serviceability 'Исправность' = DATA BOOLEAN (Scanner);
-date1 'Дата последней технической проверки' = DATA DATE (Scanner);
-date2 'Дата следующей технической проверки' = DATA DATE (Scanner) ;
 
-FORM scanner 'Сканеры'
-    OBJECTS s = Scanner // когда просто объект и его название, то создается таблица
-    PROPERTIES(s) number, model, numberRoom, serviceability, date1, date2
-    PROPERTIES(s) NEW, EDIT, DELETE
+staff 'Ответсвенный' = DATA Staff (Scanner);
+nameStaff 'Ответсвенный' (Scanner a) = name(staff(a)) NONULL;
+date1 'Дата поставки на учет' = DATA DATE (Scanner);
+date2 'Дата входа в эксплуатацию' = DATA DATE (Scanner);
+date3 'Дата амортизации' = DATA DATE (Scanner);
+
+
+//company 'Owner' = DATA Company (Location);
+//idCompany 'Owner code' (Location l) = id(company(l));
+//nameCompany 'Owner' (Location l) = name(company(l));
+
+FORM scanner 'Сканер'
+    OBJECTS s = Scanner PANEL // когда просто объект и его название, то создается таблица
+    PROPERTIES(s) number, model, numberRoom,nameStaff, date1, date2, date3
+    EDIT Scanner OBJECT s
 ;
+FORM scanners 'Сканеры'
+    OBJECTS s = Scanner // когда просто объект и его название, то создается таблица
+    PROPERTIES(s) READONLY number, model, numberRoom,nameStaff, date1, date2, date3
+    PROPERTIES(s) NEWSESSION  NEW, EDIT, DELETE
+;
+@defineDocStatusForm(scanner,s);
+
+copy 'Копировать' (Scanner s) {
+    NEWSESSION {
+        NEW ns = Scanner { //создаем новый объект
+            model(ns) <- model(s);
+            date3(ns) <- date3(s);
+//            FOR ku(KuInvoices l) = s INLINE NEW nl = KuInvoices DO {
+//                ku(nl) <- ns;
+//                inv(nl) <- inv(l);
+//                //(nl) <- (l);
+//            }
+            SHOW scanner OBJECTS s = ns DOCKED;
+        }
+    }
+}
+
+EXTEND FORM scanner
+    PROPERTIES(s) copy
+;
+
+DESIGN scanner {
+    secondaryActions {
+        type = CONTAINERH;
+        MOVE PROPERTY(copy(s));
+    }
+}
