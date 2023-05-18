@@ -39,7 +39,5 @@ FORM rooms 'Помещения'
     PROPERTIES(s)  NEW, EDIT, DELETE
     LIST Room OBJECT s // для полного вывода таблицы прикрепленной
 
-//    OBJECTS d = RoomScanner
-////    PROPERTIES(d) READONLY index, numberScan, modelScan
-//    FILTERS room(d) = s
+
 ;
