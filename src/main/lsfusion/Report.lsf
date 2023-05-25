@@ -1,15 +1,19 @@
 MODULE Report;
 
-REQUIRE Room, Scanner, Staff;
+REQUIRE Room, Scanner, Staff, Meta;
 
 
 
-FORM reports 'Отчет'
-    OBJECTS report = (r = Room, s = Scanner, a = Staff ) PIVOT 
+FORM reports 'Отчет сканеров по ауд'
+//    OBJECTS report = (r = Room, s = Scanner, a = Staff, m = ScannerStatus) PIVOT 
+//    
+//    PROPERTIES(r)  number,sumScan 
+//    PROPERTIES(s)  number, model, numberRoom,nameStaff, date1, date2, date3
+//    PROPERTIES(a) name, post, departament, numberRoom
+//    PROPERTIES(m) name
+    //PROPERTIES(s) READONLY MEASURE 
+    OBJECTS report =  Scanner
+    //PROPERTIES(r)  number,sumScan 
+    PROPERTIES(report)  numberRoom, number, model
     
-    PROPERTIES(r) desc, location, container, sumScan 
-    PROPERTIES(s) number, model, numberRoom,nameStaff, date1, date2, date3
-    PROPERTIES(a) name, post, departament, phone, email, numberRoom
-
-    PROPERTIES(r) READONLY MEASURE number
 ;

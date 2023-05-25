@@ -1,0 +1,42 @@
+MODULE ScannerRepair;
+
+REQUIRE ScannerFaulty;
+
+
+
+EXTEND CLASS ScannerStatus {
+    canceled 'В ремонте'
+}
+canceled 'В ремонте' = DATA BOOLEAN (Scanner);
+active 'Неисправен' (Scanner s) = done(s) AND NOT canceled(s);
+
+status(Scanner s) += WHEN canceled(s) THEN ScannerStatus.canceled;
+colorStatus(Scanner s) += WHEN status(s) = ScannerStatus.canceled THEN RGB(255, 255, 153);
+
+cancel 'В ремонте' (Scanner s) {
+    APPLY;
+    IF canceled() THEN RETURN;
+
+    NEWSESSION {
+        canceled(s) <- TRUE;
+        APPLY;
+    }
+}
+
+EXTEND FORM scanner
+    PROPERTIES(s) cancel SHOWIF NOT (status(s) = ScannerStatus.create OR status(s) = ScannerStatus.canceled), canceled
+;
+
+DESIGN scanner {
+    secondaryActions {
+        MOVE PROPERTY(cancel(s));
+    }
+    status {
+        MOVE PROPERTY(canceled(s));
+    }
+}
+
+EXTEND FORM scanners
+    EXTEND FILTERGROUP status
+        FILTER 'В ремонте' status(s) = ScannerStatus.canceled
+;

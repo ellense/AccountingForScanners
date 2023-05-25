@@ -1,0 +1,43 @@
+MODULE ScannerFaulty;
+
+REQUIRE Scanner;
+
+
+
+EXTEND CLASS ScannerStatus {
+    done 'Неисправен'
+}
+done 'Неисправен' = DATA BOOLEAN (Scanner);
+
+status(Scanner s) += WHEN done(s) THEN ScannerStatus.done;
+colorStatus(Scanner s) += WHEN status(s) = ScannerStatus.done THEN RGB(255, 138, 114);
+markAsDone 'Сканер неисправен' (Scanner s) {
+    APPLY;
+    IF canceled() THEN RETURN;
+
+    NEWSESSION {
+        done(s) <- TRUE;
+        APPLY;
+        
+        
+    }
+    System.formOk();
+}
+
+EXTEND FORM scanner
+    PROPERTIES(s) markAsDone SHOWIF status(s) = ScannerStatus.create, done
+;
+
+DESIGN scanner {
+    primaryActions {
+        MOVE PROPERTY(markAsDone(s)) { font = 'bold'; };
+    }
+    status {
+        MOVE PROPERTY(done(s));
+    }
+}
+
+EXTEND FORM scanners
+    EXTEND FILTERGROUP status
+        FILTER 'Неисправен' status(s) = ScannerStatus.done
+;

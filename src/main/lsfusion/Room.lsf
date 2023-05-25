@@ -8,11 +8,13 @@ CLASS Room 'Помещения';
 //room 'Линия документа' = DATA Room (RoomScanner) NONULL DELETE; // строка помещения для сканеров
 //index 'Номер строки' (RoomScanner d) = PARTITION SUM 1 IF d IS RoomScanner ORDER d BY room(d);
 
-number 'Номер' = DATA NUMERIC[3,0] (Room) NONULL;
+//number 'Номер аудитории' = DATA NUMERIC[3,0] (Room) NONULL;
+number 'Номер аудитории' = DATA STRING[3] (Room) NONULL;
 desc 'Описание' = DATA STRING[30] (Room);
 location 'Расположение'= DATA STRING[60] (Room);
 container 'Емкость' = DATA NUMERIC[4,0] (Room);
-sumScan 'Кол-во сканеров' = DATA NUMERIC[2,0] (Room)  ;
+//sumScan 'Кол-во сканеров в ауд.' = DATA NUMERIC[2,0] (Room);
+sumScan 'Кол-во сканеров в ауд.' = DATA STRING[2] (Room);
 
 //scan 'накладная' = DATA Scanner (RoomScanner) NONULL DELETE;
 //numberScan 'Номер накладной' (RoomScanner d) = number(scan(d));

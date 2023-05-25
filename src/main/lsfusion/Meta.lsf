@@ -1,0 +1,96 @@
+MODULE Meta;
+
+REQUIRE Numerator;
+
+META defineDocStatus (doc, title)
+    CLASS ###doc##Status title##' status' { // создаетсфя класс, к которому мы потом обращаемся
+        create 'Исправен' // автоматом при создании ку статус - создан
+    }
+
+    name '{First_name}' (###doc##Status s) = staticCaption(s) IF s IS ###doc##Status CHARWIDTH 12;// задаем имя 
+    //статуса с определнием сколько символов в названии будет видно пользователю
+    status 'Статусы' = ABSTRACT CASE ###doc##Status (###doc) MATERIALIZED INDEXED; // название блока
+    nameStatus 'Статус' (###doc d) = name(status(d)); //название статуса (вывод, как  понимаю)
+    colorStatus 'Цвет' = ABSTRACT CASE COLOR (###doc); // задаем ему цвет
+
+    status(###doc d) += WHEN d IS ###doc THEN ###doc##Status.create;
+    colorStatus(###doc d) += WHEN status(d) = ###doc##Status.create THEN RGB(194, 245, 193);
+
+    readonly = ABSTRACT CASE BOOLEAN (###doc); //форма для галочки
+END
+
+
+
+
+META defineDocStatusForm (doc, let)
+    EXTEND FORM doc##s //дополняем форму где будет выводиться статус
+        PROPERTIES(##let) READONLY nameStatus BACKGROUND colorStatus(##let) FIRST //добавляем столбец статус
+        FILTERGROUP status
+            FILTER 'Создан' status(##let) = ###doc##Status.create // создаем группиовку по статусам
+    ;
+
+    DESIGN doc##s {
+        FILTERGROUP(status) { alignment = STRETCH; } //располагаем группировку внизу возле кнопок
+    }
+
+    EXTEND FORM doc//дополняем форму где будет назначаться/редактироваться статус
+        PROPERTIES(##let) nameStatus BACKGROUND colorStatus(##let)
+    ;
+
+    DESIGN doc {
+        NEW statusPane FIRST {
+            caption = 'Статусы';
+            type = CONTAINERH;
+            alignment = STRETCH;
+            NEW statusActions {
+                type = CONTAINERH;
+                flex = 1;
+                NEW primaryActions {
+                    type = CONTAINERH;
+                }
+                NEW secondaryActions {
+                    type = CONTAINERH;
+                }
+            }
+            NEW status {
+                type = CONTAINERH;
+                MOVE PROPERTY(nameStatus(##let));
+            }
+        }
+    }
+END
+
+
+META defineID(class, caption, srs, width)
+    id 'Код ку' = DATA STRING[50] (###class) IN id CHARWIDTH width INDEXED;
+    ##class (STRING[50] id) = GROUP AGGR ###class o BY id(o);
+    
+    numerator###class = DATA Numerator();
+    nameNumerator###class 'Numerator'##' - '##caption = name(numerator###class());
+
+    loadDefaultNumerators () + {
+        NEW n = Numerator {
+            name(n) <- caption;
+            series(n) <- srs;
+            minValue(n) <- 1;
+            maxValue(n) <- 999999;
+            stringLength(n) <- width;
+            numerator###class() <- n;
+        }
+    }
+
+    EXTEND FORM options
+        PROPERTIES nameNumerator###class()
+    ;
+
+    DESIGN options {
+        commons {
+            MOVE PROPERTY(nameNumerator###class());
+        }
+    }
+
+    WHEN SETCHANGED(###class o IS ###class AND numerator###class() AND NOT id(o)) DO {
+        id(o) <- CONCAT '', series(numerator###class()), curStringValue(numerator###class());
+        incrementValueSession(numerator###class());
+    }
+END
