@@ -1,0 +1,16 @@
+MODULE Author;
+
+
+ob_avtore 'Автор' (){
+    MESSAGE 'Работа выполнила студент группы 440-1 \n Сараева Елена Павловна \n по дисциплине: "Информационный менеджмент" \n © Сараева Елена Павловна 2023';
+}
+
+spravka 'Справка' (){
+    LOCAL importFile = FILE ();
+    READ 'Spravka.docx' TO importFile;
+    open(importFile());
+}
+FORM author 'Информация о программе'
+    PROPERTIES() ob_avtore
+    PROPERTIES() spravka
+;

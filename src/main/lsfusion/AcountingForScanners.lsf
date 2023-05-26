@@ -1,15 +1,13 @@
 MODULE AcountingForScanners;
 
-REQUIRE Staff, Room, Scanner, Report;
+REQUIRE Staff, Room, Scanner, Report, Author;
 
 NAVIGATOR {
     NEW FOLDER masterData 'Учет сканеров' FIRST WINDOW toolbar IMAGE 'manufacturing.png' {
+        NEW author;
         NEW rooms;
         NEW staff;
         NEW scanners;
-        NEW reports;
-//        NEW FOLDER configurationss 'Конфигурации' {
-//            NEW setting;
-//        }
+
     }
 }
