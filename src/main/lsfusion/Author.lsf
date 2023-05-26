@@ -7,7 +7,7 @@ ob_avtore 'Автор' (){
 
 spravka 'Справка' (){
     LOCAL importFile = FILE ();
-    READ 'Spravka.docx' TO importFile;
+    READ '11.pdf' TO importFile;
     open(importFile());
 }
 FORM author 'Информация о программе'

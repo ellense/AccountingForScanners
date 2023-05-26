@@ -5,11 +5,11 @@ REQUIRE System, Numerator,Room;
 CLASS Staff 'Сотрудники';
     name 'ФИО' = DATA STRING[60] (Staff) NONULL;
     post 'Должность' = DATA STRING[30] (Staff) NONULL;
-    departament 'Кафедра/отдел'= DATA STRING[30] (Staff);
+    departament 'Факультет/Кафедра'= DATA STRING[30] (Staff);
     phone 'Телефон' = DATA NUMERIC[11,0] (Staff);
     email 'Email' = DATA STRING[40] (Staff);
 class 'Аудитория' = DATA Room (Staff);
-numberRoom 'Аудитория/кабинет' (Staff a) = number(class(a)) NONULL;
+numberRoom 'Аудитория/кабинет' (Staff a) = name(class(a)) NONULL;
 
 FORM staff 'Сотрудники'
     OBJECTS s = Staff // когда просто объект и его название, то создается таблица

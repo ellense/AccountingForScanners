@@ -26,7 +26,7 @@ META defineDocStatusForm (doc, let)
     EXTEND FORM doc##s //дополняем форму где будет выводиться статус
         PROPERTIES(##let) READONLY nameStatus BACKGROUND colorStatus(##let) FIRST //добавляем столбец статус
         FILTERGROUP status
-            FILTER 'Создан' status(##let) = ###doc##Status.create // создаем группиовку по статусам
+            FILTER 'Исправен' status(##let) = ###doc##Status.create // создаем группиовку по статусам
     ;
 
     DESIGN doc##s {
@@ -62,7 +62,7 @@ END
 
 
 META defineID(class, caption, srs, width)
-    id 'Код ку' = DATA STRING[50] (###class) IN id CHARWIDTH width INDEXED;
+    id 'Инвентарный номер' = DATA STRING[50] (###class) IN id CHARWIDTH width INDEXED;
     ##class (STRING[50] id) = GROUP AGGR ###class o BY id(o);
     
     numerator###class = DATA Numerator();
@@ -92,5 +92,75 @@ META defineID(class, caption, srs, width)
     WHEN SETCHANGED(###class o IS ###class AND numerator###class() AND NOT id(o)) DO {
         id(o) <- CONCAT '', series(numerator###class()), curStringValue(numerator###class());
         incrementValueSession(numerator###class());
+    }
+END
+
+META defineDateFilterForm(form, let, prefix)
+    EXTEND FORM form
+        PROPERTIES() filterDateFrom, filterDateTo, setFilterToday, setFilterYesterday, setFilterTomorrow,
+            setFilterLast7Days, setFilterLast30Days, setFilterLastCurrentMonth, setFilterLastCurrentYear,setDrop
+
+        FILTERS NOT prefix###date3(let) < filterDateFrom(), NOT prefix###date3(let) > filterDateTo()
+    ;
+
+    DESIGN form {
+        GROUP (filterDates) { type = CONTAINERH; columns = 1; }
+    }
+END
+
+META defineDateFilterForm(form, let)
+    @defineDateFilterForm(form, let,);
+END
+
+META defineDocFilter(doc, cls, property, obj, caption)
+    doc###property = DATA LOCAL NESTED cls ();
+    name###doc###property caption = name(doc###property());
+
+    EXTEND FORM doc##s
+        PROPERTIES() name###doc###property
+
+        FILTERS property(obj) = doc###property() OR NOT doc###property()
+    ;
+
+    DESIGN doc##s {
+        filters {
+            MOVE PROPERTY(name###doc###property());
+        }
+    }
+
+END
+
+META defineDocObjectsForm (form, obj, title)
+    DESIGN form {
+        OBJECTS {
+            NEW pane {
+                fill = 1;
+                type = CONTAINERH;
+                NEW tabbedPane {
+                    type = TABBED;
+                    fill = 1;
+                    MOVE BOX(obj) { caption = title; }
+                }
+                NEW rightPane {
+                    NEW filters {
+
+                        caption = 'Фильтры';
+                        alignment = STRETCH;
+                        MOVE FILTERGROUPS(obj) {
+                            type = CONTAINERV;
+                            alignment = STRETCH;
+                        }
+                    }
+                    NEW actions {
+                        alignment = STRETCH;
+                        caption = 'Действия';
+                    }
+                    NEW statuses {
+                        alignment = STRETCH;
+                        caption = 'Статусы';
+                    }
+                }
+            }
+        }
     }
 END

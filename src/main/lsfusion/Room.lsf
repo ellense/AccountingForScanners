@@ -9,7 +9,7 @@ CLASS Room 'Помещения';
 //index 'Номер строки' (RoomScanner d) = PARTITION SUM 1 IF d IS RoomScanner ORDER d BY room(d);
 
 //number 'Номер аудитории' = DATA NUMERIC[3,0] (Room) NONULL;
-number 'Номер аудитории' = DATA STRING[3] (Room) NONULL;
+name'Номер аудитории' = DATA STRING[3] (Room) NONULL;
 desc 'Описание' = DATA STRING[30] (Room);
 location 'Расположение'= DATA STRING[60] (Room);
 container 'Емкость' = DATA NUMERIC[4,0] (Room);
@@ -37,7 +37,7 @@ sumScan 'Кол-во сканеров в ауд.' = DATA STRING[2] (Room);
 
 FORM rooms 'Помещения'
     OBJECTS s = Room // когда просто объект и его название, то создается таблица
-    PROPERTIES(s)  number, desc, location, container, sumScan
+    PROPERTIES(s)  name, desc, location, container, sumScan
     PROPERTIES(s)  NEW, EDIT, DELETE
     LIST Room OBJECT s // для полного вывода таблицы прикрепленной
 

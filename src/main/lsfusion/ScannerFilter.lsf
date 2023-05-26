@@ -1,0 +1,57 @@
+MODULE ScannerFilter;
+
+REQUIRE Scanner, Meta;
+
+
+// фильтры даты
+GROUP filterDates 'Интервал дат';
+
+filterDateFrom 'Дата с' = DATA LOCAL NESTED DATE() IN filterDates;
+filterDateTo 'по' = DATA LOCAL NESTED DATE() IN filterDates;
+
+setFilterToday 'Сегодня' () {
+    filterDateFrom() <- currentDate();
+    filterDateTo() <- currentDate();
+} IN filterDates;
+
+setFilterYesterday 'Вчера' () {
+    filterDateFrom() <- subtract(currentDate(), 1);
+    filterDateTo() <- subtract(currentDate(), 1);
+} IN filterDates;
+
+setFilterTomorrow 'Завтра' () {
+    filterDateFrom() <- sum(currentDate(), 1);
+    filterDateTo() <- sum(currentDate(), 1);
+} IN filterDates;
+
+setFilterLast7Days '7 дней' () {
+    filterDateFrom() <- subtract(currentDate(), 7);
+    filterDateTo() <- subtract(currentDate(), 1);
+} IN filterDates;
+
+setFilterLast30Days '30 дней' () {
+    filterDateFrom() <- subtract(currentDate(), 30);
+    filterDateTo() <- subtract(currentDate(), 1);
+} IN filterDates;
+
+setFilterLastCurrentMonth 'Этот месяц' () {
+    filterDateFrom() <- firstDayOfMonth(currentDate());
+    filterDateTo() <- currentDate();
+} IN filterDates;
+
+setFilterLastCurrentYear 'Этот год' () {
+    filterDateFrom() <- toDateFormat('' + currentYear() + '0101', 'YYYYMMDD');
+    filterDateTo() <- currentDate();
+} IN filterDates;
+
+setDrop 'Очистить' (){
+    filterDateFrom() <- NULL ;
+    filterDateTo() <- NULL ;
+}IN filterDates;
+
+@defineDateFilterForm(scanners, s);
+
+
+ //правая панель фильтры по поставщикам и типу а так же действия
+@defineDocFilter(scanner, Room, class, s, 'Аудитория');
+@defineDocFilter(scanner, Staff, staff, s, 'Ответственный');

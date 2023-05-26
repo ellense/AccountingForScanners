@@ -1,23 +1,26 @@
 MODULE Scanner;
 
-REQUIRE  Room, Staff, Meta;
+REQUIRE  Room, Staff, Meta,Time;
 
 CLASS Scanner 'Сканеры';
 
 @defineDocStatus(Scanner, 'ku');
 
-number 'Инвентарный номер' = DATA STRING[60] (Scanner) NONULL;
+//number 'Инвентарный номер' = DATA STRING[60] (Scanner) NONULL;
 model 'Модель' = DATA STRING[40] (Scanner) NONULL;
+manufacture 'Производитель' = DATA STRING[40] (Scanner) ;
+type 'Тип сканера' = DATA STRING[40] (Scanner) ;
+format 'Формат сканирования' = DATA STRING[10] (Scanner) ;
 
 class 'Аудитория' = DATA Room (Scanner);
-numberRoom 'Аудитория/кабинет' (Scanner a) = number(class(a)) NONULL;
+numberRoom 'Ауд./каб.' (Scanner a) = name(class(a)) NONULL;
 
 staff 'Ответсвенный' = DATA Staff (Scanner);
 nameStaff 'Ответсвенный' (Scanner a) = name(staff(a)) NONULL;
 date1 'Дата поставки на учет' = DATA DATE (Scanner);
 date2 'Дата входа в эксплуатацию' = DATA DATE (Scanner);
 date3 'Дата амортизации' = DATA DATE (Scanner);
-
+@defineID(scanner, 'kumeta', '', 6);
 
 //company 'Owner' = DATA Company (Location);
 //idCompany 'Owner code' (Location l) = id(company(l));
@@ -25,14 +28,17 @@ date3 'Дата амортизации' = DATA DATE (Scanner);
 
 FORM scanner 'Сканер'
     OBJECTS s = Scanner PANEL // когда просто объект и его название, то создается таблица
-    PROPERTIES(s) number, model, numberRoom,nameStaff, date1, date2, date3
+    PROPERTIES(s)  model, numberRoom,nameStaff, manufacture, type, format, date1, date2, date3
     EDIT Scanner OBJECT s
 ;
 FORM scanners 'Сканеры'
     OBJECTS s = Scanner // когда просто объект и его название, то создается таблица
-    PROPERTIES(s) READONLY number, model, numberRoom,nameStaff, date1, date2, date3
+    PROPERTIES(s) READONLY id, model, numberRoom,nameStaff, manufacture, type, format, date1, date2, date3
     PROPERTIES(s) NEWSESSION  NEW, EDIT, DELETE
 ;
+
+@defineDocObjectsForm(scanners,s,'Сканеры');
+
 @defineDocStatusForm(scanner,s);
 
 copy 'Копировать' (Scanner s) {
@@ -55,6 +61,7 @@ EXTEND FORM scanner
 ;
 
 DESIGN scanner {
+    caption = (CONCAT ' ', 'Сканер ', '№' + id(s)); // изменяем название заголовка формы
     secondaryActions {
         type = CONTAINERH;
         MOVE PROPERTY(copy(s));
